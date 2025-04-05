@@ -21,17 +21,17 @@ const MobileSidebar = ({
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const router = useRouter();
-    const searchParams = useSearchParams();
-    const handleFilter = (type: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('search', type);
-      router.push(`?${params.toString()}`);
-    };
+  const searchParams = useSearchParams();
+  const handleFilter = (type: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("search", type);
+    router.push(`?${params.toString()}`);
+  };
   return (
     <div className=" px-6 py-4 min-h-screen w-full flex flex-col justify-between  bg-slate-900/90 border-r-2 border-white/40">
-      <div className="flex flex-col gap-4 mt-4 text-lg">
+      <div className="flex flex-col gap-3 mt-4 text-lg">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-extrabold text-white">Second Brain</h1>
+          <h1 className="text-2xl font-extrabold text-white">BrainSync</h1>
           <div className="cursor-pointer" onClick={() => setIsOpen(false)}>
             <CrossIcon />
           </div>
@@ -131,10 +131,9 @@ const MobileSidebar = ({
           text="Add Brain"
           startIcon={<PlusIcon />}
         />
-      </div>
-      <div className="mt-1 w-full">
-        <div className="flex items-center gap-5"></div>
-        <ProfileCard />
+        <div className="mt-3 w-full">
+          <ProfileCard />
+        </div>
       </div>
     </div>
   );
