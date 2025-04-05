@@ -7,7 +7,7 @@ interface ButtonProps {
   onclick?: () => void;
   size?: "sm" | "md" | "lg";
   extraStyle?: string;
-
+  disabled?: boolean;
   startIcon?: ReactElement;
 }
 
@@ -28,11 +28,13 @@ const Button = ({
   onclick,
   extraStyle,
   startIcon,
+  disabled: disabled,
 }: ButtonProps) => {
   return (
     <>
       <button
         onClick={onclick}
+        disabled={disabled}
         className={`${style[variant]} ${defaultStyle} ${extraStyle}`}
       >
         {startIcon}

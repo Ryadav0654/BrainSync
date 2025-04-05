@@ -1,11 +1,11 @@
 "use client";
-import React from "react";
+import React, {useState} from "react";
 import Input from "./Input";
 import Button from "./Button";
 import PlusIcon from "./icons/PlusIcon";
 import CrossIcon from "./icons/CrossIcon";
 import apiClient from "@/libs/apiClient";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, set } from "react-hook-form";
 import toast from "react-hot-toast";
 
 type Inputs = {
@@ -18,6 +18,7 @@ const AddBrainModal = ({
 }: {
   handleOpenModal: () => void;
 }) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -26,6 +27,7 @@ const AddBrainModal = ({
   } = useForm<Inputs>();
 
   const handleAddBrain: SubmitHandler<Inputs> = async (data) => {
+    setLoading(true);
     const res = await apiClient.post("/api/content", {
       ...data,
     });
@@ -33,11 +35,13 @@ const AddBrainModal = ({
     console.log("res in add brain", res);
     if (res.status !== 200) {
       toast.error("Failed to add brain");
+      setLoading(false);
       console.error("error occured while adding brain: ", res);
     }
     toast.success("Brain added successfully");
     reset();
     handleOpenModal();
+    setLoading(false);
     setTimeout(() => {
       window.location.reload();
     }, 500);
@@ -109,9 +113,10 @@ const AddBrainModal = ({
 
           <Button
             type="submit"
+            disabled={loading || !!errors.title || !!errors.link || !!errors.type}
             variant="primary"
             text="Add New Brain"
-            extraStyle="flex items-center gap-3 w-full text-white justify-center hover:bg-persian-blue-100/20 font-semibold"
+            extraStyle="flex items-center gap-3 w-full text-white justify-center hover:bg-persian-blue-100/20 font-semibold cursor-pointer disabled:bg-persian-blue-500/20 disabled:text-gray-400 disabled:cursor-not-allowed"
             startIcon={<PlusIcon />}
           />
         </form>
