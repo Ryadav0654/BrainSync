@@ -30,7 +30,7 @@ export async function DELETE(req: NextRequest,  context: { params: { id: string 
       return NextResponse.json({ message: "Content deleted successfully" });
     } catch (error) {
       return NextResponse.json(
-        { error: "Something went wrong" },
+        { error: error },
         { status: 500 }
       );
     }

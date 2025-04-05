@@ -9,8 +9,6 @@ import AddBrainModal from "@/components/AddBrainModal";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
-import DeleteConfirmation from "@/components/DeletePopup";
-import { set } from "react-hook-form";
 
 interface Content {
   id: string;

@@ -3,7 +3,7 @@ import { authOptions } from "@/libs/auth"; // Ensure this path is correct
 import { getServerSession } from "next-auth/next"; // Use 'next-auth/next'
 import { prisma } from "@/db";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ contents: allContents });
   } catch (error) {
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: error },
       { status: 500 }
     );
   }
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Content created successfully" });
   } catch (error) {
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: error },
       { status: 500 }
     );
   }

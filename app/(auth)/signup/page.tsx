@@ -23,11 +23,11 @@ const Signup = () => {
 
   const { name, email, password, rePassword } = data;
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const registerUser = async (e: any) => {
+  const registerUser = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
 
@@ -59,6 +59,7 @@ const Signup = () => {
         rePassword: "",
       });
     } catch (error) {
+      console.log("error: ", error);
       return toast.error("Something went wrong!");
     }
   };
@@ -194,13 +195,17 @@ const Signup = () => {
           className="bg-white hover:bg-white/80 flex items-center p-1.5 rounded-full"
           onClick={() => signIn("google")}
         >
+          <picture>
           <img src="./google.svg" alt="" className="w-8 h-8" />
+          </picture>
         </button>
         <button
           className="bg-white hover:bg-white/80 flex items-center p-1.5 rounded-full"
           onClick={() => signIn("github")}
         >
+          <picture>
           <img src="./github-mark.svg" alt="github" className="w-8 h-8" />
+          </picture>
         </button>
       </div>
     </div>

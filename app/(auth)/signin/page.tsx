@@ -21,11 +21,11 @@ const Signin = () => {
 
   const { email, password } = data;
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await signIn("credentials", {
       redirect: false,
@@ -49,7 +49,7 @@ const Signin = () => {
     if (session.status === "authenticated") {
       router.push("/");
     }
-  }, [session.status]);
+  }, [session.status, router]);
 
   const handleToggle = () => {
     setShow(!show);
@@ -134,10 +134,14 @@ const Signin = () => {
       </div>
       <div className="flex items-center justify-center py-2 gap-x-5">
         <button className="bg-white hover:bg-white/80 flex items-center p-1.5 rounded-full" onClick={() => signIn("google")}>
-          <img src="./google.svg" alt="" className="w-8 h-8" />
+        <picture>
+          <img src="./google.svg" alt="google_icon" className="w-8 h-8" />
+        </picture>
         </button>
         <button className="bg-white hover:bg-white/80 flex items-center p-1.5 rounded-full" onClick={() => signIn("github")}>
-          <img src="./github-mark.svg" alt="github" className="w-8 h-8" />
+          <picture>
+          <img src="./github-mark.svg" alt="github_icon" className="w-8 h-8" />
+          </picture>
         </button>
       </div>
     </div>

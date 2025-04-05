@@ -1,8 +1,6 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import Button from "./Button";
-import { useRouter } from "next/navigation";
-import apiClient from "@/libs/apiClient";
 import Image from "next/image";
 import LogoutIcon from "./icons/LogoutIcon";
 import toast from "react-hot-toast";
@@ -24,8 +22,7 @@ const ProfileCard = () => {
       const user = session?.data?.user;
       setUser(user);
     } 
-  }, [session.status]);
-  const router = useRouter();
+  }, [session.status, session.data]);
   const handleLogout = async () => {
     try {
       toast.success("Logged out successfully");
