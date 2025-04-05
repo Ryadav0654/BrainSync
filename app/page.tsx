@@ -8,20 +8,19 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
-  
+
   useEffect(() => {
     if (session?.user) {
      router.push("/dashboard");
     }
-  }, []);
+  }, [session, router]);
 
 
   return (
     <main className="flex flex-col items-center justify-between p-24">
       {session?.user && (
         <div>
-          <p className="text-3xl">Welcome, {session.user.name}</p>
-          <div className="mb-5">{JSON.stringify(session?.user, null, 2)}</div>
+          <p className="text-3xl font-extrabold">Welcome, {session.user.name}</p>
 
           <button
             onClick={() => signOut()}
