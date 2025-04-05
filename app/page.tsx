@@ -2,9 +2,19 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { data: session } = useSession();
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (session?.user) {
+     router.push("/dashboard");
+    }
+  }, []);
+
 
   return (
     <main className="flex flex-col items-center justify-between p-24">
