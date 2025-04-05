@@ -22,7 +22,6 @@ const MobileSidebar = ({
 }) => {
   const router = useRouter();
     const searchParams = useSearchParams();
-    // console.log("contents in sidebar", contents)
     const handleFilter = (type: string) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set('search', type);
