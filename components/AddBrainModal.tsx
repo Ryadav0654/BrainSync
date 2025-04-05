@@ -5,7 +5,7 @@ import Button from "./Button";
 import PlusIcon from "./icons/PlusIcon";
 import CrossIcon from "./icons/CrossIcon";
 import apiClient from "@/libs/apiClient";
-import { useForm, SubmitHandler, set } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 
 type Inputs = {
