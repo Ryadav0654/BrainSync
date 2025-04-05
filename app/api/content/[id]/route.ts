@@ -5,8 +5,6 @@ import { prisma } from "@/db";
 export async function DELETE(req: NextRequest,  context: { params: { id: string } }) {
     const params  = await context.params;
     const { id } = params;
-    console.log("id -> ", id);
-    console.log("context -> ", context);
     const session = await getServerSession(authOptions);
   
     if (!session) {
