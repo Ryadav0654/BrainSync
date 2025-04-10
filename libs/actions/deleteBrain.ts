@@ -10,7 +10,6 @@ const deleteBrain = async (id: string) => {
       },
       
     );
-    console.log("res in delete brain", res);
     if (res.status !== 200) {
       toast.error("Failed to delete content");
       return;
@@ -18,10 +17,14 @@ const deleteBrain = async (id: string) => {
     toast.success("Content deleted successfully");
     setTimeout(() => {
       window.location.reload();
-    }, 1000);
-  } catch (error) {
+    }, 500);
+  } catch (error: unknown) {
     toast.error("Failed to delete content");
-    console.error(error);
+    if (error instanceof Error) {
+      console.error(error);
+      return error.message;
+    }
+    return "An unknown error occurred";
   }
   toast.success("Content deleted successfully");
 };

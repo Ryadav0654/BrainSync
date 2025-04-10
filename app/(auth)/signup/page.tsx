@@ -1,6 +1,6 @@
 "use client";
+import React, { useEffect } from "react";
 import Link from "next/link";
-import React from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,9 +8,11 @@ import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
+import { useSession } from "next-auth/react";
 
 const Signup = () => {
   const router = useRouter();
+  const session = useSession();
   const [show, setShow] = useState(false);
   const [type, setType] = useState("password");
 
@@ -72,6 +74,12 @@ const Signup = () => {
       setType("password");
     }
   };
+
+  useEffect(() => {
+      if (session.status === "authenticated") {
+        router.push("/");
+      }
+    }, [session.status, router]);
 
   return (
     <div className="w-[300px] mx-auto flex flex-col justify-center h-screen">
