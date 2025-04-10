@@ -5,6 +5,7 @@ import ShareIcon from "./icons/ShareIcon";
 import MenuIcon from "./icons/MenuIcon";
 import MobileSidebar from "./MobileSidebar";
 import PlusIcon from "./icons/PlusIcon";
+import Link from "next/link";
 const DashboardHeader = ({
   handleOpenModal,
 }: {
@@ -14,7 +15,8 @@ const DashboardHeader = ({
   return (
     <div className="flex items-center justify-between py-3  md:px-4 md:py-4">
       <div>
-        <h1 className="text-2xl font-extrabold text-white">Dashboard</h1>
+        <h1 className="hidden md:flex text-2xl font-extrabold text-white">Dashboard</h1>
+        <Link href="/" className="md:hidden block text-2xl font-extrabold text-white">BrainSync</Link>
       </div>
       <div className="md:hidden block">
         <span onClick={() => setIsOpen(!isOpen)}>

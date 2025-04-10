@@ -9,6 +9,7 @@ import QuestionIcon from "./icons/QuestionIcon";
 import HomeIcon from "./icons/HomeIcon";
 import LinkIcon from "./icons/LinkIcon";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const Sidebar = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const Sidebar = () => {
   return (
     <div className=" px-4 py-8 min-h-screen w-full flex flex-col justify-between bg-slate-900/30 border-r-1 border-white/40">
       <div className="flex flex-col  gap-4 ">
-        <h1 className="text-2xl font-extrabold text-white">BrainSync</h1>
+        <Link href="/" className="text-2xl font-extrabold text-white">BrainSync</Link>
         <Button
           type="button"
           variant="secondry"

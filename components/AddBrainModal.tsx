@@ -7,6 +7,8 @@ import CrossIcon from "./icons/CrossIcon";
 import apiClient from "@/libs/apiClient";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
+import axios from "axios";
+import ErrorPage from "./ErrorPage";
 
 type Inputs = {
   title: string;
@@ -19,7 +21,9 @@ const AddBrainModal = ({
   handleOpenModal: () => void;
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const {
+  const [error, setError] = useState<string | null>(null);
+
+    const {
     register,
     handleSubmit,
     reset,
@@ -28,24 +32,38 @@ const AddBrainModal = ({
 
   const handleAddBrain: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
-    const res = await apiClient.post("/api/content", {
-      ...data,
-    });
-
-    console.log("res in add brain", res);
-    if (res.status !== 200) {
-      toast.error("Failed to add brain");
-      setLoading(false);
-      console.error("error occured while adding brain: ", res);
+   try {
+     const res = await apiClient.post("/api/content", {
+       ...data,
+     });
+ 
+     console.log("res in add brain", res);
+     if (res.status !== 200) {
+       toast.error("Failed to add brain");
+       setLoading(false);
+       console.error("error occured while adding brain: ", res);
+     }
+     toast.success("Brain added successfully");
+     reset();
+     handleOpenModal();
+     setLoading(false);
+     setTimeout(() => {
+       window.location.reload();
+     }, 500);
+   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 429) {
+      setError("Rate limit exceeded. Try again shortly.");
+    } else {
+      setError("Failed to add brain.");
     }
-    toast.success("Brain added successfully");
-    reset();
-    handleOpenModal();
-    setLoading(false);
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
+  }
   };
+
+  if(error){
+    return (
+      <ErrorPage message={error} />
+    )
+  }
 
   return (
     <div className="fixed flex z-10 justify-center items-center top-0 left-0 right-0 h-screen w-full bg-[#212035]/80 p-6">

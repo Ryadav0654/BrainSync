@@ -9,6 +9,8 @@ import AddBrainModal from "@/components/AddBrainModal";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
+import axios from "axios";
+import ErrorPage from "@/components/ErrorPage";
 
 interface Content {
   id: string;
@@ -22,14 +24,12 @@ interface Content {
   tags: string[];
 }
 
-
-
- const Dashboard =  () => {
+const Dashboard = () => {
   const session = useSession();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
-
   const [allContent, setAllContent] = useState<Content[]>([]);
   const [filteredContent, setFilteredContent] = useState<Content[]>([]);
 
@@ -39,19 +39,24 @@ interface Content {
   useEffect(() => {
     setLoading(true);
     const fetchContent = async () => {
-      const data = await getContent();
-      const promise = new Promise((resolve) => setTimeout(resolve, 2000));
-      await promise;
-      setLoading(false);
-      setAllContent(data);
+      try {
+        const data = await getContent();
+        setLoading(false);
+        setAllContent(data);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 429) {
+          setError("Rate limit exceeded. Try again shortly.");
+        } else {
+          setError("Failed to load data.");
+        }
+      }
     };
     fetchContent();
   }, []);
 
-
   //Filter whenever search param or content changes
   useEffect(() => {
-    if (!allContent.length) return;
+    if (!allContent?.length) return;
 
     const filtered = search
       ? allContent.filter((item) => item.type.toLowerCase().includes(search))
@@ -70,8 +75,12 @@ interface Content {
     setOpenModal(!openModal);
   };
 
-  if(loading){
-    return <LoadingSkeleton />
+  if (loading) {
+    return <LoadingSkeleton />;
+  }
+
+  if(error) {
+    return <ErrorPage message={error} />;
   }
 
   return (

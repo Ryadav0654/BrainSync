@@ -22,7 +22,7 @@ const DeleteConfirmation: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => 
         <div className="flex justify-end gap-3">
           <Button
             onclick={onClose}
-            extraStyle="text-gray-800 hover:text-gray-600"
+            extraStyle="text-gray-800 hover:text-gray-600 cursor-pointer"
             text="Cancel"
             type="button"
             variant="secondry"
@@ -32,6 +32,7 @@ const DeleteConfirmation: React.FC<Props> = ({ isOpen, onClose, onConfirm }) => 
             text="Delete"
             type="button"
             variant="logout"
+            extraStyle="cursor-pointer "
           />
 
         </div>
