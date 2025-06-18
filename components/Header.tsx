@@ -43,7 +43,7 @@ const Header = () => {
               }} extraStyle="text-white cursor-pointer transition" type="button"/>
             ) : (
               <motion.button
-                className="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
