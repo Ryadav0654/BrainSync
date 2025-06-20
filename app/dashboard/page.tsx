@@ -12,7 +12,7 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 import axios from "axios";
 import ErrorPage from "@/components/ErrorPage";
 
-interface Content {
+export interface Content {
   id: string;
   title: string;
   type: string;
@@ -54,6 +54,10 @@ const Dashboard = () => {
     fetchContent();
   }, []);
 
+  const handleBrainAdded = (newBrain: Content) => {
+    setAllContent((prev) => [newBrain, ...prev]);
+  };
+
   //Filter whenever search param or content changes
   useEffect(() => {
     if (!allContent?.length) return;
@@ -79,13 +83,18 @@ const Dashboard = () => {
     return <LoadingSkeleton />;
   }
 
-  if(error) {
+  if (error) {
     return <ErrorPage message={error} />;
   }
 
   return (
     <>
-      {openModal && <AddBrainModal handleOpenModal={handleOpenModal} />}
+      {openModal && (
+        <AddBrainModal
+          handleOpenModal={handleOpenModal}
+          onAddSuccess={handleBrainAdded}
+        />
+      )}
       <div className="grid grid-cols-6 fixed top-0 max-h-screen w-full">
         <div className="hidden lg:block lg:col-span-1 bg-transparent">
           <Sidebar />
@@ -98,9 +107,9 @@ const Dashboard = () => {
                 No contents found. Please add one.
               </h1>
             )}
-            {filteredContent.map((content) => (
+            {filteredContent.map((content, index) => (
               <Card
-                key={content.id}
+                key={index}
                 id={content.id}
                 title={content.title}
                 type={content.type}

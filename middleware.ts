@@ -1,40 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const rateLimitMap = new Map<string, { count: number; time: number }>();
+const allowedOrigins = ["chrome-extension://*"];
 
+const corsOptions = {
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Credentials": "true",
+};
 
-export async function middleware(req: NextRequest) {
-  const url = req.nextUrl.pathname;
-  
-  if (url.startsWith("/api/auth")) {
-    return NextResponse.next();
+export async function middleware(request: NextRequest) {
+  // Check the origin from the request
+  const origin = request.headers.get("origin") ?? "";
+
+  // const isAllowedOrigin = allowedOrigins.includes(origin);
+  const isAllowedOrigin = origin.startsWith("chrome-extension://");
+
+  // Handle preflighted requests
+  const isPreflight = request.method === "OPTIONS";
+
+  if (isPreflight) {
+    const preflightHeaders = {
+      ...(isAllowedOrigin && { "Access-Control-Allow-Origin": origin }),
+      ...corsOptions,
+    };
+    return NextResponse.json({}, { headers: preflightHeaders });
   }
 
-  const ip = req.headers.get("x-forwarded-for") || "unknown";
-  const now = Date.now();
+  // Handle simple requests
+  const response = NextResponse.next();
 
-  const entry = rateLimitMap.get(ip) || { count: 0, time: now };
-
-  const fiveMinutes = 5 * 60 * 1000;
-  if (now - entry.time < fiveMinutes) {
-    if (entry.count >= 5) {
-      return NextResponse.json(
-        { error: "Too many requests — try again in 5 minutes" },
-        { status: 429 }
-      );
-    }
-
-    entry.count++;
-  } else {
-    entry.count = 1;
-    entry.time = now;
+  if (isAllowedOrigin) {
+    response.headers.set("Access-Control-Allow-Origin", origin);
   }
 
-  rateLimitMap.set(ip, entry);
+  Object.entries(corsOptions).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
-  matcher: ["/api/:path*"], 
+  matcher: "/api/:path*",
 };
