@@ -2,65 +2,60 @@ import { NextRequest, NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-const rateLimitMap = new Map<string, { count: number; time: number }>();
-
 const rateLimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, "60 s"),
+  limiter: Ratelimit.slidingWindow(6, "60 s"),
   analytics: true,
 });
 
-// export default async function middleware(req: NextRequest) {
-//   const url = req.nextUrl.pathname;
-//   const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-//   const response = NextResponse.next();
+const allowedOrigins = ["chrome-extension://*"];
 
-//   if (url.startsWith("/api/auth/session")) {
-//     return response;
-//   }
+const corsOptions = {
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Credentials": "true",
+};
 
-//   console.log("ip: ", ip);
-//   const { success } = await rateLimit.limit(ip);
-//   return success
-//     ? response
-//     : NextResponse.json(
-//         { error: "Too many requests — try again in 5 minutes" },
-//         { status: 429 }
-//       );
-// }
+export async function middleware(request: NextRequest) {
+  // Check the origin from the request
+  const origin = request.headers.get("origin") ?? "";
+  const ip = request.headers.get("x-forwarded-for") || "127.0.0.1";
 
-export async function middleware(req: NextRequest) {
-  const url = req.nextUrl.pathname;
+  // const isAllowedOrigin = allowedOrigins.includes(origin);
+  const isAllowedOrigin = origin.startsWith("chrome-extension://");
 
-  if (url.startsWith("/api/auth")) {
-    return NextResponse.next();
+  // Handle preflighted requests
+  const isPreflight = request.method === "OPTIONS";
+
+  const { success } = await rateLimit.limit(ip);
+
+  if (isPreflight) {
+    const preflightHeaders = {
+      ...(isAllowedOrigin && { "Access-Control-Allow-Origin": origin }),
+      ...corsOptions,
+    };
+    return NextResponse.json({}, { headers: preflightHeaders });
   }
 
-  const ip = req.headers.get("x-forwarded-for") || "unknown";
-  const now = Date.now();
+  // Handle simple requests
+  const response = NextResponse.next();
 
-  const entry = rateLimitMap.get(ip) || { count: 0, time: now };
+  if (isAllowedOrigin) {
+    response.headers.set("Access-Control-Allow-Origin", origin);
+  }
 
-  const fiveMinutes = 5 * 60 * 1000;
-  if (now - entry.time < fiveMinutes) {
-    if (entry.count >= 5) {
-      return NextResponse.json(
-        { error: "Too many requests — try again in 5 minutes" },
+  Object.entries(corsOptions).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+
+  return success
+    ? response
+    : NextResponse.json(
+        { error: "Too many requests — try again in 1 minutes" },
         { status: 429 }
       );
-    }
-
-    entry.count++;
-  } else {
-    entry.count = 1;
-    entry.time = now;
-  }
-
-  rateLimitMap.set(ip, entry);
-
-  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/api/:path*"],
+  matcher: "/api/:path*",
 };

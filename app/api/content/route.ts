@@ -29,20 +29,17 @@ export async function GET() {
     }
     return NextResponse.json({ contents: allContents });
   } catch (error) {
-    return NextResponse.json(
-      { error: error },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { type, title, link } = body;
+  const { type, title, link, tags } = body;
 
-  if(!type || !title || !link) {
+  if (!type || !title || !link || !tags) {
     return NextResponse.json({ error: "Missing Fields" }, { status: 400 });
-  };
-  
+  }
+
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -55,12 +52,13 @@ export async function POST(req: NextRequest) {
         title: title,
         type: type,
         link: link,
+        tags: tags,
         user: {
           connect: {
             id: session.user.id,
           },
         },
-      }
+      },
     });
 
     if (!newContent) {
@@ -71,9 +69,6 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({ message: "Content created successfully" });
   } catch (error) {
-    return NextResponse.json(
-      { error: error },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }

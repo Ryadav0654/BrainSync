@@ -62,7 +62,8 @@ const Signup = () => {
       });
     } catch (error) {
       console.log("error: ", error);
-      return toast.error("Something went wrong!");
+      toast.error("Something went wrong!");
+      return;
     }
   };
 
@@ -76,14 +77,16 @@ const Signup = () => {
   };
 
   useEffect(() => {
-      if (session.status === "authenticated") {
-        router.push("/");
-      }
-    }, [session.status, router]);
+    if (session.status === "authenticated") {
+      router.push("/");
+    }
+  }, [session.status, router]);
 
   return (
     <div className="w-[300px] mx-auto flex flex-col justify-center h-screen">
-      <h1 className="text-2xl md:text-3xl font-extrabold mb-5">Sign Up with <span className="text-blue-500">BrainSync</span></h1>
+      <h1 className="text-2xl md:text-3xl font-extrabold mb-5">
+        Sign Up with <span className="text-blue-500">BrainSync</span>
+      </h1>
       <form onSubmit={registerUser}>
         <div className="mb-6">
           <label
@@ -204,7 +207,7 @@ const Signup = () => {
           onClick={() => signIn("google")}
         >
           <picture>
-          <img src="./google.svg" alt="" className="w-8 h-8" />
+            <img src="./google.svg" alt="" className="w-8 h-8" />
           </picture>
         </button>
         <button
@@ -212,7 +215,7 @@ const Signup = () => {
           onClick={() => signIn("github")}
         >
           <picture>
-          <img src="./github-mark.svg" alt="github" className="w-8 h-8" />
+            <img src="./github-mark.svg" alt="github" className="w-8 h-8" />
           </picture>
         </button>
       </div>
