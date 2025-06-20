@@ -90,7 +90,7 @@ import DeleteIcon from "./icons/DeleteIcon";
 import DocumentIcon from "./icons/DocumentIcon";
 import deleteBrain from "@/libs/actions/deleteBrain";
 import Link from "next/link";
-import DeleteConfirmation from "./DeletePopup"; 
+import DeleteConfirmation from "./DeletePopup";
 
 interface CardProps {
   id: string;
@@ -122,7 +122,10 @@ const Card = ({
         </div>
         <div className="flex gap-3 items-center">
           <ShareIcon />
-          <span className="cursor-pointer" onClick={() => setIsConfirmOpen(true)}>
+          <span
+            className="cursor-pointer"
+            onClick={() => setIsConfirmOpen(true)}
+          >
             <DeleteIcon />
           </span>
         </div>
@@ -140,14 +143,18 @@ const Card = ({
 
       <div className="mt-3">
         <Link href={link} target="_blank">
-          <h1 className="text-2xl text-white font-semibold">{title}</h1>
+          <h1 className="w-full text-xl subpixel-antialiased truncate text-white font-semibold overflow-ellipsis">
+            {title}
+          </h1>
         </Link>
         <div className="flex justify-between text-white/60 text-sm mb-2">
           <p>Author: {username}</p>
           <p>{new Date(createdAt).toDateString()}</p>
         </div>
         <div className="flex gap-3 mt-2 overflow-x-scroll scrollbar-none">
-          {tags?.map((text) => <Tags key={text} text={text} />)}
+          {tags?.map((text) => (
+            <Tags key={text} text={text} />
+          ))}
         </div>
       </div>
 

@@ -1,11 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 const rateLimitMap = new Map<string, { count: number; time: number }>();
 
+const rateLimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(5, "60 s"),
+  analytics: true,
+});
+
+// export default async function middleware(req: NextRequest) {
+//   const url = req.nextUrl.pathname;
+//   const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+//   const response = NextResponse.next();
+
+//   if (url.startsWith("/api/auth/session")) {
+//     return response;
+//   }
+
+//   console.log("ip: ", ip);
+//   const { success } = await rateLimit.limit(ip);
+//   return success
+//     ? response
+//     : NextResponse.json(
+//         { error: "Too many requests — try again in 5 minutes" },
+//         { status: 429 }
+//       );
+// }
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl.pathname;
-  
+
   if (url.startsWith("/api/auth")) {
     return NextResponse.next();
   }
@@ -36,5 +62,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/:path*"], 
+  matcher: ["/api/:path*"],
 };
